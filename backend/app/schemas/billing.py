@@ -14,7 +14,7 @@ class BillingSchema(BaseModel):
     timestamp: datetime
     doctor_id: str
     payment_mode: str
-    amount_paid_paise: int = Field(ge=0)
+    amount_paid_paise: int
     discount_paise: int = Field(default=0, ge=0)
     is_refund: bool = False
     line_items: list[LineItemSchema]
