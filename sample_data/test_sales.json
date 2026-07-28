@@ -1,0 +1,119 @@
+[
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-001",
+    "timestamp": "2026-07-30T09:15:00Z",
+    "doctor_id": "DOC-001",
+    "line_items": [
+      {
+        "drug_name": "Paracetamol",
+        "qty": 2,
+        "unit_price_paise": 1000
+      },
+      {
+        "drug_name": "Vitamin C",
+        "qty": 1,
+        "unit_price_paise": 500
+      }
+    ],
+    "payment_mode": "card",
+    "amount_paid_paise": 2500,
+    "discount_paise": 0,
+    "is_refund": false
+  },
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-002",
+    "timestamp": "2026-07-30T10:10:00Z",
+    "doctor_id": "DOC-002",
+    "line_items": [
+      {
+        "drug_name": "Paracetamol",
+        "qty": 3,
+        "unit_price_paise": 1000
+      },
+      {
+        "drug_name": "Crocin",
+        "qty": 2,
+        "unit_price_paise": 800
+      }
+    ],
+    "payment_mode": "upi",
+    "amount_paid_paise": 4400,
+    "discount_paise": 200,
+    "is_refund": false
+  },
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-003",
+    "timestamp": "2026-07-30T10:45:00Z",
+    "doctor_id": "DOC-003",
+    "line_items": [
+      {
+        "drug_name": "Azithromycin",
+        "qty": 1,
+        "unit_price_paise": 5000
+      }
+    ],
+    "payment_mode": "cash",
+    "amount_paid_paise": 5000,
+    "discount_paise": 0,
+    "is_refund": false
+  },
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-004",
+    "timestamp": "2026-07-30T11:20:00Z",
+    "doctor_id": "DOC-001",
+    "line_items": [
+      {
+        "drug_name": "Crocin",
+        "qty": 5,
+        "unit_price_paise": 800
+      },
+      {
+        "drug_name": "Vitamin C",
+        "qty": 4,
+        "unit_price_paise": 500
+      }
+    ],
+    "payment_mode": "card",
+    "amount_paid_paise": 5500,
+    "discount_paise": 500,
+    "is_refund": false
+  },
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-005",
+    "timestamp": "2026-07-30T12:05:00Z",
+    "doctor_id": "DOC-004",
+    "line_items": [
+      {
+        "drug_name": "Insulin",
+        "qty": 1,
+        "unit_price_paise": 12000
+      }
+    ],
+    "payment_mode": "insurance",
+    "amount_paid_paise": 12000,
+    "discount_paise": 0,
+    "is_refund": false
+  },
+  {
+    "clinic_id": "CLN-001",
+    "visit_id": "VISIT-006",
+    "timestamp": "2026-07-30T12:40:00Z",
+    "doctor_id": "DOC-002",
+    "line_items": [
+      {
+        "drug_name": "Paracetamol",
+        "qty": 1,
+        "unit_price_paise": 1000
+      }
+    ],
+    "payment_mode": "upi",
+    "amount_paid_paise": -1000,
+    "discount_paise": 0,
+    "is_refund": true
+  }
+]

@@ -2,8 +2,8 @@ import json
 
 from fastapi import HTTPException, UploadFile
 from pydantic import ValidationError
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from app.database.models import Billing, Medicine
 from app.schemas.billing import BillingSchema
@@ -31,24 +31,67 @@ class UploadService:
                 detail="Invalid JSON file.",
             )
 
-        try:
-            records = [
-                BillingSchema.model_validate(item)
-                for item in payload
-            ]
-
-        except ValidationError as e:
+        # Ensure the uploaded JSON is an array
+        if not isinstance(payload, list):
             raise HTTPException(
                 status_code=400,
-                detail=e.errors(),
+                detail={
+                    "success": False,
+                    "message": "Invalid JSON format.",
+                    "errors": [
+                        {
+                            "field": "root",
+                            "message": "Expected a JSON array of billing records.",
+                        }
+                    ],
+                },
             )
+
+        records = []
+
+        for index, item in enumerate(payload):
+
+            try:
+                records.append(
+                    BillingSchema.model_validate(item)
+                )
+
+            except ValidationError as e:
+
+                validation_errors = []
+
+                for err in e.errors():
+
+                    field = ".".join(
+                        str(x) for x in err["loc"]
+                    )
+
+                    validation_errors.append(
+                        {
+                            "field": f"record[{index}].{field}",
+                            "message": err["msg"],
+                        }
+                    )
+
+                raise HTTPException(
+                    status_code=400,
+                    detail={
+                        "success": False,
+                        "message": "Validation failed.",
+                        "errors": validation_errors,
+                    },
+                )
 
         errors = BillingValidator.validate(records)
 
         if errors:
             raise HTTPException(
                 status_code=400,
-                detail=errors,
+                detail={
+                    "success": False,
+                    "message": "Business validation failed.",
+                    "errors": errors,
+                },
             )
 
         for record in records:
@@ -80,13 +123,24 @@ class UploadService:
             db.commit()
 
         except IntegrityError:
+
             db.rollback()
 
             raise HTTPException(
                 status_code=400,
-                detail="Duplicate visit_id found. This billing log has already been uploaded.",
+                detail={
+                    "success": False,
+                    "message": "Duplicate visit_id found.",
+                    "errors": [
+                        {
+                            "field": "visit_id",
+                            "message": "This billing log has already been uploaded.",
+                        }
+                    ],
+                },
             )
 
         return {
-            "message": f"Successfully uploaded {len(records)} billing records."
+            "success": True,
+            "message": f"Successfully uploaded {len(records)} billing records.",
         }
