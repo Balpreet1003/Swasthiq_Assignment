@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 
+from app.api.router import api_router
+from app.core.config import settings
+
 app = FastAPI(
-    title="SwasthiQ EOD Billing API",
-    description="REST API for End-of-Day Billing & Analytics",
-    version="1.0.0"
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
 )
 
 
@@ -19,3 +21,10 @@ def health():
     return {
         "status": "healthy"
     }
+
+
+app.include_router(
+    api_router,
+    prefix="/api/v1",
+    tags=["API"],
+)
