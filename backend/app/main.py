@@ -1,13 +1,15 @@
 from fastapi import FastAPI
-
 from app.api.router import api_router
 from app.core.config import settings
+from app.database.db import Base, engine
+from app.database import models
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
 )
 
+Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
