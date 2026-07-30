@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     GEMINI_API_KEY: str
+
+    FRONTEND_URL: str
     
     GEMINI_MODEL: str = "gemini-3.5-flash-lite"
 
