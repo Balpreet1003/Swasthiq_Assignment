@@ -7,9 +7,9 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str
 
-    OPENAI_API_KEY: str
-
-    MODEL: str = "gpt-5.5"
+    GEMINI_API_KEY: str
+    
+    GEMINI_MODEL: str = "gemini-3.5-flash-lite"
 
     DEBUG: bool = True
 

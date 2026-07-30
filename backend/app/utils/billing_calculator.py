@@ -20,3 +20,6 @@ class BillingCalculator:
             )
             - billing.discount_paise
         )
+    @staticmethod
+    def format_currency(paise: int) -> str:
+        return f"₹{paise / 100:.2f}"

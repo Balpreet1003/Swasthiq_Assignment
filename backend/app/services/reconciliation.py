@@ -9,25 +9,8 @@ from app.schemas.report import (
 )
 from app.utils.billing_calculator import BillingCalculator
 
+
 class ReconciliationService:
-
-    @staticmethod
-    def _calculate_billed_amount(billing: Billing) -> int:
-        """
-        Calculate billed amount from medicines.
-        Refund records are not considered billable.
-        """
-
-        if billing.is_refund:
-            return 0
-
-        return (
-            sum(
-                medicine.qty * medicine.unit_price_paise
-                for medicine in billing.medicines
-            )
-            - billing.discount_paise
-        )
 
     @staticmethod
     def generate_report(db: Session) -> ReconciliationReport:
@@ -40,18 +23,20 @@ class ReconciliationService:
 
         payment_summary = defaultdict(
             lambda: {
+                "billed": 0,
                 "collected": 0,
+                "outstanding": 0,
                 "refunded": 0,
             }
         )
 
         for billing in billings:
 
-            billed_amount = BillingCalculator.billed_amount(billing)
+            billed_amount = BillingCalculator.billed_amount(
+                billing
+            )
 
-            total_billed += billed_amount
-
-            mode = billing.payment_mode
+            mode = billing.payment_mode.lower()
 
             if billing.is_refund:
 
@@ -65,33 +50,68 @@ class ReconciliationService:
                     "refunded"
                 ] += refund_amount
 
-            else:
+                continue
 
-                total_collected += (
-                    billing.amount_paid_paise
-                )
+            total_billed += billed_amount
 
-                payment_summary[mode][
-                    "collected"
-                ] += billing.amount_paid_paise
+            total_collected += (
+                billing.amount_paid_paise
+            )
 
-        outstanding = (
+            outstanding = max(
+                billed_amount
+                - billing.amount_paid_paise,
+                0,
+            )
+
+            payment_summary[mode][
+                "billed"
+            ] += billed_amount
+
+            payment_summary[mode][
+                "collected"
+            ] += billing.amount_paid_paise
+
+            payment_summary[mode][
+                "outstanding"
+            ] += outstanding
+
+        total_outstanding = (
             total_billed
             - total_collected
         )
 
         return ReconciliationReport(
+
             total_billed_paise=total_billed,
+
             total_collected_paise=total_collected,
+
             total_refund_paise=total_refund,
-            outstanding_paise=outstanding,
+
+            outstanding_paise=total_outstanding,
+
             payment_summary=[
+
                 PaymentModeSummary(
+
                     payment_mode=mode,
+
+                    billed_paise=data["billed"],
+
                     collected_paise=data["collected"],
-                    refunded_paise=data["refunded"],
-                    net_paise=max(0, data["collected"] - data["refunded"]),
+
+                    outstanding_paise=data[
+                        "outstanding"
+                    ],
+
+                    refunded_paise=data[
+                        "refunded"
+                    ],
+
                 )
+
                 for mode, data in payment_summary.items()
+
             ],
         )

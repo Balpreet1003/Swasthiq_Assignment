@@ -2,12 +2,16 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
 from app.database.db import get_db
+from app.schemas.response import UploadResponse
 from app.services.upload_service import UploadService
 
 router = APIRouter()
 
 
-@router.post("/billing/upload")
+@router.post(
+    "/billing/upload",
+    response_model=UploadResponse,
+)
 async def upload_billing_log(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
