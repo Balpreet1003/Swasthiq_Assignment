@@ -18,14 +18,18 @@ class UploadService:
     @staticmethod
     async def process_file(file: UploadFile, db: Session):
 
+        # ----------------------------
         # Validate file extension
+        # ----------------------------
         if not file.filename.endswith(".json"):
             raise HTTPException(
                 status_code=400,
                 detail="Only JSON files are allowed.",
             )
 
+        # ----------------------------
         # Parse JSON
+        # ----------------------------
         try:
             content = await file.read()
             payload = json.loads(content)
@@ -36,7 +40,9 @@ class UploadService:
                 detail="Invalid JSON file.",
             )
 
-        # Payload must be a JSON array
+        # ----------------------------
+        # Payload validation
+        # ----------------------------
         if not isinstance(payload, list):
             raise HTTPException(
                 status_code=400,
@@ -52,11 +58,13 @@ class UploadService:
                 },
             )
 
-        # Zero-visit day
+        # ----------------------------
+        # Empty file
+        # ----------------------------
         if len(payload) == 0:
             return {
-                "success": True,
-                "message": "No visits found for this day.",
+                "success": False,
+                "message": "File upload failed! No data in the file.",
                 "processed_rows": 0,
                 "rejected_rows_count": 0,
                 "rejected_rows": [],
@@ -65,9 +73,12 @@ class UploadService:
         processed_rows = 0
         rejected_rows = []
 
-        # Used to detect duplicates within the uploaded file
         uploaded_visit_ids = set()
+        billings_to_insert = []
 
+        # ----------------------------
+        # Validate every record
+        # ----------------------------
         for index, item in enumerate(payload):
 
             row_number = index + 1
@@ -114,27 +125,6 @@ class UploadService:
                 continue
 
             uploaded_visit_ids.add(record.visit_id)
-
-            # ----------------------------
-            # Duplicate already present in DB
-            # ----------------------------
-            existing = (
-                db.query(Billing)
-                .filter(Billing.visit_id == record.visit_id)
-                .first()
-            )
-
-            if existing:
-
-                rejected_rows.append(
-                    {
-                        "row": row_number,
-                        "visit_id": record.visit_id,
-                        "reason": "visit_id already exists in the database.",
-                    }
-                )
-
-                continue
 
             # ----------------------------
             # Business Validation
@@ -184,14 +174,56 @@ class UploadService:
                     )
                 )
 
-            db.add(billing)
+            billings_to_insert.append(billing)
             processed_rows += 1
 
-        db.commit()
+        # ----------------------------
+        # No valid records
+        # ----------------------------
+        if processed_rows == 0:
+            return {
+                "success": False,
+                "message": "File upload failed! No valid billing records found.",
+                "processed_rows": 0,
+                "rejected_rows_count": len(rejected_rows),
+                "rejected_rows": rejected_rows,
+            }
+
+        # ----------------------------
+        # Replace old data with new data
+        # ----------------------------
+        try:
+
+            # Delete previous data
+            db.query(Billing).delete()
+
+            # Insert new records
+            db.add_all(billings_to_insert)
+
+            db.commit()
+
+        except Exception:
+
+            db.rollback()
+
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to store billing records.",
+            )
+
+        # ----------------------------
+        # Success Response
+        # ----------------------------
+        if rejected_rows:
+            message = (
+                "Successfully uploaded the file. Some entries skipped due to missing or invalid data."
+            )
+        else:
+            message = "Successfully uploaded the file."
 
         return {
             "success": True,
-            "message": "Upload completed.",
+            "message": message,
             "processed_rows": processed_rows,
             "rejected_rows_count": len(rejected_rows),
             "rejected_rows": rejected_rows,

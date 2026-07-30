@@ -309,6 +309,9 @@ Create a `.env` file.
 DATABASE_URL=sqlite:///billing.db
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 FRONTEND_URL=http://localhost:5173
+APP_NAME=SwasthiQ EOD Billing API
+APP_VERSION=1.0.0
+DEBUG=True
 ```
 
 Run the server.
