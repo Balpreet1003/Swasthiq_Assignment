@@ -1,1 +1,85 @@
+# ===============================
+# Python
+# ===============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# SQLite Database
+*.db
+*.sqlite3
+
+# Environment Variables
+.env
+.env.*
+
+# Logs
+*.log
+
+# ===============================
+# Node / React
+# ===============================
+
+node_modules/
+
+# Build
+dist/
+build/
+
+# Vite
+.vite/
+
+# ===============================
+# IDE
+# ===============================
+
+.vscode/
+.idea/
+
+# ===============================
+# OS Files
+# ===============================
+
 .DS_Store
+Thumbs.db
+
+# ===============================
+# Python Packaging
+# ===============================
+
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# ===============================
+# Misc
+# ===============================
+
+*.swp
+*.swo
+*.tmp
+
+# ===============================
+# Screenshots (optional)
+# ===============================
+# Uncomment if you don't want to commit screenshots
+# screenshots/
+
+# ===============================
+# Keep these files
+# ===============================
+!.env.example
+!requirements.txt
+!package.json
+!package-lock.json
