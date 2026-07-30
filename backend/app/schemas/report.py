@@ -14,6 +14,8 @@ class PaymentModeSummary(BaseModel):
 
 
 class ReconciliationReport(BaseModel):
+    report_date: str
+
     total_billed_paise: int
 
     total_collected_paise: int

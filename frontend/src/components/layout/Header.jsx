@@ -1,6 +1,7 @@
 export default function Header({
   title,
   subtitle,
+  date,
 }) {
   return (
     <div className="mb-10 flex items-start justify-between">
@@ -30,7 +31,7 @@ export default function Header({
           shadow-sm
         "
       >
-        27 Jul 2026
+        {date}
       </button>
 
     </div>

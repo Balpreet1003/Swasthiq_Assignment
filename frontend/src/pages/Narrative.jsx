@@ -21,31 +21,16 @@ export default function Narrative() {
 
     async function load() {
 
-      const [
-        narrativeData,
-        reportData,
-        analyticsData,
-      ] = await Promise.all([
-        getNarrative(),
-        getReport(),
-        getAnalytics(),
-      ]);
-
+      setReport(await getReport(),);
+      setAnalytics(await getAnalytics());
+      const narrativeData = await getNarrative();
       setNarrative(narrativeData.narrative);
-      setReport(reportData);
-      setAnalytics(analyticsData);
     }
 
     load();
 
   }, []);
 
-  if (!report || !analytics)
-    return (
-      <DashboardLayout>
-        Loading...
-      </DashboardLayout>
-    );
 
   return (
     <DashboardLayout>
@@ -53,18 +38,30 @@ export default function Narrative() {
       <Header
         title="AI Narrative"
         subtitle="AI Generated Daily Summary"
+        date={report?.report_date}
       />
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div>
 
-        <NarrativeCard
-          narrative={narrative}
-        />
+        {
+          (!report || !analytics) ? (
+            <div className="col-span-2 text-lg text-slate-500">
+              Loading...
+            </div>
+          ) : (
+            <div className="grid gap-8 lg:grid-cols-2">
+              <NarrativeCard
+                narrative={narrative}
+                isLoading={!narrative}
+              />
 
-        <TracedFigures
-          report={report}
-          analytics={analytics}
-        />
+              <TracedFigures
+                report={report}
+                analytics={analytics}
+              />
+            </div>
+          )
+        }
 
       </div>
 

@@ -17,6 +17,11 @@ class ReconciliationService:
 
         billings = db.query(Billing).all()
 
+        report_date = (
+            billings[0].timestamp.strftime("%Y-%m-%d")
+            if billings
+            else None
+        )
         total_billed = 0
         total_collected = 0
         total_refund = 0
@@ -82,6 +87,8 @@ class ReconciliationService:
         )
 
         return ReconciliationReport(
+
+            report_date=report_date,
 
             total_billed_paise=total_billed,
 

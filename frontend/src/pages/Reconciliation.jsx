@@ -15,6 +15,7 @@ export default function Reconciliation() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [rejectedRows, setRejectedRows] = useState([]);
 
   const loadReport = async () => {
     try {
@@ -23,8 +24,9 @@ export default function Reconciliation() {
 
       const data = await getReport();
 
-      console.log("Fresh Report:", data); // Add this
       setReport(data);
+      setRejectedRows(JSON.parse(localStorage.getItem("rejected_rows"))?.rejected_rows || []);
+      
     } catch (err) {
       console.error(err);
       setError("Failed to load reconciliation report.");
@@ -80,6 +82,7 @@ export default function Reconciliation() {
       <Header
         title="EOD Reconciliation"
         subtitle="Mehta Multi-Speciality Clinic"
+        date={report.report_date}
       />
       <UploadSection
         onUploadSuccess={loadReport}
@@ -130,6 +133,20 @@ export default function Reconciliation() {
           paymentSummary={report.payment_summary}
         />
       </div>
+      
+      {rejectedRows.length > 0 && (
+        <div className="mt-8 flex gap-2 rounded-lg border border-red-300 bg-red-100 px-4 py-2 text-sm font-medium text-red-700">
+          <p>Missing Rows: </p> 
+          <div className="flex flex-wrap gap-3">
+            {rejectedRows.map((row) => (
+                <span key={row.row}>
+                  Row {row.row}
+                </span>
+            ))}
+          </div>
+        </div>
+      )}
+
     </DashboardLayout>
   );
 }

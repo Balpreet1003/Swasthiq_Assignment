@@ -24,10 +24,6 @@ export default function Sidebar() {
   return (
     <aside className="w-20 bg-white border-r border-slate-200 flex flex-col items-center py-8">
 
-      <div className="mb-14">
-        <div className="h-3 w-3 rounded-full border-2 border-slate-700"></div>
-      </div>
-
       <nav className="flex flex-col gap-6">
 
         {menuItems.map((item) => {

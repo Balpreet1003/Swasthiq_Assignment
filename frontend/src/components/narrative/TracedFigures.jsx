@@ -27,19 +27,30 @@ export default function TracedFigures({
       danger: true,
     },
     {
-      value: `${analytics.peak_hour.hour} / ${formatCurrency(
-        analytics.peak_hour.revenue_paise
-      )}`,
+      value: 
+        analytics.peak_hour.hour === "N/A"
+          ? "N/A"
+          : `${analytics.peak_hour.hour}-${parseInt(
+              analytics.peak_hour.hour.split(":")[0],
+              10
+            ) + 1}:00 / ${formatCurrency(
+              analytics.peak_hour.revenue_paise
+            )}`
+      ,
       label: "revenue_by_hour[max]",
     },
     {
-      value: `${topRevenueMedicine.drug_name}`,
+      value: `${
+        topRevenueMedicine?.drug_name ? 
+          topRevenueMedicine.drug_name : 
+          "N/A"
+      }`,
       label: "top_drug_by_revenue",
     },
     {
-      value: formatCurrency(
-        topRevenueMedicine.revenue_paise
-      ),
+      value: topRevenueMedicine?.revenue_paise ? 
+        formatCurrency(topRevenueMedicine.revenue_paise) : 
+        "N/A",
       label: "top_drug_revenue",
     },
   ];

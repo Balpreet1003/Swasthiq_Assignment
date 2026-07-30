@@ -46,6 +46,7 @@ export default function Analytics() {
       <Header
         title="Analytics"
         subtitle="Revenue & Medicine Insights"
+        date={analytics.report_date}
       />
 
       <RevenueChart

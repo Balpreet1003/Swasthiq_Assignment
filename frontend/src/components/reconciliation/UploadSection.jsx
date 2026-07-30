@@ -19,9 +19,18 @@ export default function UploadSection({ onUploadSuccess }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      await uploadFile(formData);
+      const response = await uploadFile(formData);
+      
+      if (response.success) {
+        localStorage.setItem(
+          "rejected_rows",
+          JSON.stringify({
+            rejected_rows: response.rejected_rows,
+          })
+        );
+      }
 
-      toast.success("Billing file uploaded successfully.");
+      response?.success ? toast.success(response.message) : toast.error(response.message);
 
       setFile(null);
       inputRef.current.value = "";

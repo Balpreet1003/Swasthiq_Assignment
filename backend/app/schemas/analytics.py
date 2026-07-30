@@ -22,6 +22,7 @@ class TopMedicineByRevenue(BaseModel):
 
 
 class AnalyticsReport(BaseModel):
+    report_date: str
     revenue_by_hour: list[RevenueByHour]
     peak_hour: PeakHour
     top_medicines_by_quantity: list[TopMedicineByQuantity]

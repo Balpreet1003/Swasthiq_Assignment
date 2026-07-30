@@ -20,6 +20,12 @@ class AnalyticsService:
 
         billings = db.query(Billing).all()
 
+        report_date = (
+            billings[0].timestamp.strftime("%Y-%m-%d")
+            if billings
+            else None
+        )
+
         revenue_by_hour = defaultdict(int)
 
         medicine_quantity = defaultdict(int)
@@ -83,6 +89,7 @@ class AnalyticsService:
             )
 
         return AnalyticsReport(
+            report_date=report_date,
             revenue_by_hour=revenue_list,
             peak_hour=peak,
             top_medicines_by_quantity=[

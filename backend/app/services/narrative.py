@@ -1,4 +1,5 @@
 from app.schemas.analytics import AnalyticsReport
+from app.schemas.report import ReconciliationReport
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -13,10 +14,7 @@ from app.utils.billing_calculator import BillingCalculator
 class NarrativeService:
 
     @staticmethod
-    def build_prompt(db: Session) -> str:
-
-        report = ReconciliationService.generate_report(db)
-        analytics = AnalyticsService.generate_analytics(db)
+    def build_prompt(db: Session, report: ReconciliationReport, analytics: AnalyticsReport) -> str:
 
         prompt = f"""
 You are a senior healthcare operations analyst.
@@ -99,7 +97,10 @@ Generate only the executive summary.
     @staticmethod
     def generate_narrative(db: Session) -> NarrativeResponse:
 
-        prompt = NarrativeService.build_prompt(db)
+        report = ReconciliationService.generate_report(db)
+        analytics = AnalyticsService.generate_analytics(db)
+
+        prompt  = NarrativeService.build_prompt(db, report, analytics)
 
         try:
             response = client.models.generate_content(
@@ -108,6 +109,7 @@ Generate only the executive summary.
             )
 
             return NarrativeResponse(
+                report_date=report.report_date,
                 narrative=response.text.strip()
             )
 
