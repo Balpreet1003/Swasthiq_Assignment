@@ -10,9 +10,14 @@ app = FastAPI(
     version=settings.APP_VERSION,
 )
 
+origin = [
+    settings.FRONTEND_URL,
+    "https://swasthiq-assignment-eact.vercel.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origin,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
