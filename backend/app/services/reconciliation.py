@@ -20,7 +20,7 @@ class ReconciliationService:
         report_date = (
             billings[0].timestamp.strftime("%Y-%m-%d")
             if billings
-            else None
+            else ""
         )
         total_billed = 0
         total_collected = 0
