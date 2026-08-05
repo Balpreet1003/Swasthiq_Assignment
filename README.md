@@ -273,7 +273,7 @@ This guarantees that every reconciliation report, analytics chart, and AI narrat
 Clone the repository.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Balpreet1003/Swasthiq_Assignment.git
 cd SWASTHIQ_ASSIGNMENT/backend
 ```
 
